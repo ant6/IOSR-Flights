@@ -5,6 +5,7 @@ import zipfile
 import csv
 import io
 from sys import argv
+from os.path import sep
 import subprocess
 import time
 import os
@@ -39,7 +40,7 @@ def analyse_csv(file_hand, out_name):
     reader = csv.DictReader(file_hand)
     #print(reader['DayOfWeek'], reader['From'])
 
-    with HdfsFile(out_name + '.csv') as out_file:
+    with HdfsFile(sep + 'dataset/' + sep + out_name + '.csv') as out_file:
         fdns = ['DayOfWeek', 'Origin', 'Dest', 'Carrier', 'DepDelay']
         writer = csv.DictWriter(out_file, fieldnames=fdns)
         writer.writeheader()
