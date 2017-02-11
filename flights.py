@@ -10,6 +10,8 @@ import subprocess
 import time
 import os
 import copy
+import codecs
+import translitcodec
 
 debug = False
 
@@ -32,20 +34,19 @@ def open_zip(path):
     print(split_path)
     with zipfile.ZipFile(path) as zz:
         print(zz.namelist())
-        with zz.open(split_path + ".csv", 'rU') as inside:
+        with zz.open(split_path + ".csv", mode='rU') as inside:
             analyse_csv(io.TextIOWrapper(inside), split_path)
 
 
 def analyse_csv(file_hand, out_name):
     reader = csv.DictReader(file_hand)
-    #print(reader['DayOfWeek'], reader['From'])
 
     with HdfsFile(sep + 'dataset/' + sep + out_name + '.csv') as out_file:
         fdns = ['DayOfWeek', 'Origin', 'Dest', 'Carrier', 'DepDelay']
         writer = csv.DictWriter(out_file, fieldnames=fdns)
         writer.writeheader()
         for row in reader:
-            writer.writerow({k: v for k, v in row.items() if k in fdns})
+            writer.writerow({k: codecs.encode(v, 'translit/long') for k, v in row.items() if k in fdns})
 
 if __name__ == "__main__":
     try:
