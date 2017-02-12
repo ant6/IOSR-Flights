@@ -35,18 +35,19 @@ def open_zip(path):
     with zipfile.ZipFile(path) as zz:
         print(zz.namelist())
         with zz.open(split_path + ".csv", mode='rU') as inside:
-            analyse_csv(io.TextIOWrapper(inside), split_path)
+            analyse_csv(io.TextIOWrapper(inside, encoding='utf-8', errors='ignore'), split_path)
 
 
 def analyse_csv(file_hand, out_name):
     reader = csv.DictReader(file_hand)
 
-    with HdfsFile(sep + 'dataset/' + sep + out_name + '.csv') as out_file:
+    with HdfsFile(sep + 'dataset' + sep + out_name + '.csv') as out_file:
         fdns = ['DayOfWeek', 'Origin', 'Dest', 'Carrier', 'DepDelay', 'ArrDelay']
         writer = csv.DictWriter(out_file, fieldnames=fdns)
         writer.writeheader()
         for row in reader:
             writer.writerow({k: codecs.encode(v, 'translit/long') for k, v in row.items() if k in fdns})
+
 
 if __name__ == "__main__":
     try:
