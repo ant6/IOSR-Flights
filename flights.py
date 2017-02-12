@@ -42,7 +42,7 @@ def analyse_csv(file_hand, out_name):
     reader = csv.DictReader(file_hand)
 
     with HdfsFile(sep + 'dataset/' + sep + out_name + '.csv') as out_file:
-        fdns = ['DayOfWeek', 'Origin', 'Dest', 'Carrier', 'DepDelay']
+        fdns = ['DayOfWeek', 'Origin', 'Dest', 'Carrier', 'DepDelay', 'ArrDelay']
         writer = csv.DictWriter(out_file, fieldnames=fdns)
         writer.writeheader()
         for row in reader:
